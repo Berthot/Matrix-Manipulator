@@ -16,12 +16,15 @@ namespace Matrix
 {
     public class Matrix
     {
-        private readonly List<List<double>> _matrix;
+        private List<List<double>> _matrix;
         private const double Tolerance = 0.01;
+        private static char _csvSplit;
 
-        public Matrix()
+        public Matrix(char csvSplit = ',')
         {
             _matrix = new List<List<double>>();
+            _csvSplit = csvSplit;
+
         }
 
         public void AddLineRandomValues(int lenght, int maxGenerateNumber = 10)
@@ -77,14 +80,55 @@ namespace Matrix
                     line.Aggregate("", (current, value) =>
                         current + $"{value.ToString(CultureInfo.InvariantCulture)},");
 
-                var saveLine = string.Format($"{newLine.TrimEnd(',')}\n", Environment.NewLine);
+                var saveLine = string.Format($"{newLine.TrimEnd(_csvSplit)}\n", Environment.NewLine);
                 csv.Append(saveLine);
             }
 
+            File.WriteAllText(GetPath(csvName), csv.ToString());
+        }
+
+        public void ReadMatrixByCsv(string csvName)
+        {
+            try
+            {
+                using var reader = new StreamReader(GetPath(csvName));
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    if(line == "") continue;
+                    if (line == null) throw new NullReferenceException();
+                    var matrixLine =
+                        line.Split(_csvSplit).Select(double.Parse).ToList();
+                    _matrix.Add(matrixLine);
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Falha na conversão dos valores para double");
+                ClearMatrix();
+            }
+            catch (NullReferenceException)
+            {
+                Console.WriteLine("Matrix com valores nulos");
+                ClearMatrix();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                ClearMatrix();
+                Console.WriteLine("Erro ao captar a matriz do csv, corrija e tente novamente");
+            }
+        }
+
+        public void ClearMatrix()
+        {
+            _matrix = new List<List<double>>();
+        }
+
+        private static string GetPath(string csvName)
+        {
             var currentPath = Directory.GetCurrentDirectory().Replace("/bin/Debug/netcoreapp3.1", "");
-            var path =
-                $"{currentPath}/MatrixFiles/{csvName}.csv";
-            File.WriteAllText(path, csv.ToString());
+            return $"{currentPath}/MatrixFiles/{csvName}.csv";
         }
 
         public void PrintMatrix()
@@ -146,7 +190,7 @@ namespace Matrix
         {
             while (GetRowLenght() < row || GetRowLenght() == 0)
             {
-                _matrix.Add(new List<double>(){-1.0});
+                _matrix.Add(new List<double>() {-1.0});
             }
         }
 
