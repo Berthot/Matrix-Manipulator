@@ -37,6 +37,17 @@ namespace Matrix
 
             _matrix.Add(line);
         }
+        
+        public void AddLineRandomValuesEmpty(int lenght)
+        {
+            var line = new List<double>();
+            for (var i = 0; i < lenght; i++)
+            {
+                line.Add(-1.0);
+            }
+
+            _matrix.Add(line);
+        }
 
         public void AddLineList(List<double> line)
         {
@@ -53,6 +64,14 @@ namespace Matrix
             for (var i = 0; i < rows; i++)
             {
                 AddLineRandomValues(column);
+            }
+        }
+        
+        public void CreateCompleteMatrixEmpty(int rows, int column)
+        {
+            for (var i = 0; i < rows; i++)
+            {
+                AddLineRandomValuesEmpty(column);
             }
         }
         
@@ -95,10 +114,10 @@ namespace Matrix
             File.WriteAllText(GetPath(csvName), csv.ToString());
         }
         
-        public void SaveMatrixInCsvWithTime(string csvName, TimeSpan time)
+        public void SaveMatrixInCsvWithTime(string csvName, TimeSpan time, string dimension)
         {
             var csv = new StringBuilder();
-            csv.Append($"tempo de execução{_csvSplit.ToString()}{time.ToString()} sec\n\n");
+            csv.Append($"tempo de execução{_csvSplit.ToString()}{time.ToString()} sec,{dimension}\n\n");
             foreach (var line in _matrix)
             {
                 var newLine =
@@ -196,28 +215,7 @@ namespace Matrix
 
         public void AddValueOnIndex(double value, int row, int column)
         {
-            FillEmptyRow(row);
-            FillEmptyColumn(column);
             _matrix[row][column] = value;
-        }
-
-        private void FillEmptyColumn(int column)
-        {
-            while (GetColumnLenght() < column && GetColumnLenght() == 0)
-            {
-                for (var i = 0; i < GetRowLenght(); i++)
-                {
-                    _matrix[i].Add(-1.0);
-                }
-            }
-        }
-
-        private void FillEmptyRow(int row)
-        {
-            while (GetRowLenght() < row || GetRowLenght() == 0)
-            {
-                _matrix.Add(new List<double>() {-1.0});
-            }
         }
 
 

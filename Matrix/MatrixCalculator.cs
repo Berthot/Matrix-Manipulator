@@ -9,18 +9,14 @@ namespace Matrix
 {
     public class MatrixCalculator
     {
-        public Matrix MultiplierParallel(Matrix matrixA, Matrix matrixB)
+        public Matrix MultiplierParallel(Matrix matrixA, Matrix matrixB, Matrix result)
         {
             if (ValidateMultiplier(matrixA, matrixB))
                 throw new Exception("Matrizes não validas");
-            var matrixAxb = new Matrix();
 
-            Parallel.For(0, 
-                matrixA.GetRowLenght(), 
-                new ParallelOptions {MaxDegreeOfParallelism = 5}, 
+            Parallel.For(0, matrixA.GetRowLenght(), new ParallelOptions {MaxDegreeOfParallelism = 8}, 
                 lineMatrixA =>
             {
-                var newLine = new List<double>();
                 for (var columnMatrixB = 0; columnMatrixB < matrixB.GetColumnLenght(); columnMatrixB++)
                 {
                     var acc = 0.0;
@@ -30,24 +26,21 @@ namespace Matrix
                         var b = matrixB.GetMatrix()[i][columnMatrixB];
                         acc += a * b;
                     }
-
-                    newLine.Add(acc);
+                    result.AddValueOnIndex(acc, lineMatrixA, columnMatrixB);
                 }
 
-                matrixAxb.AddLineList(newLine);
             });
 
-            return matrixAxb;
+            return result;
         }
 
-        public Matrix Multiplier(Matrix matrixA, Matrix matrixB)
+        public Matrix Multiplier(Matrix matrixA, Matrix matrixB, Matrix result)
         {
             if (ValidateMultiplier(matrixA, matrixB))
                 throw new Exception("Matrizes não validas");
-            var matrixAxb = new Matrix();
+
             for (var lineMatrixA = 0; lineMatrixA < matrixA.GetRowLenght(); lineMatrixA++)
             {
-                var newLine = new List<double>();
                 for (var columnMatrixB = 0; columnMatrixB < matrixB.GetColumnLenght(); columnMatrixB++)
                 {
                     var acc = 0.0;
@@ -57,14 +50,11 @@ namespace Matrix
                         var b = matrixB.GetMatrix()[i][columnMatrixB];
                         acc += a * b;
                     }
-
-                    newLine.Add(acc);
+                    result.AddValueOnIndex(acc, lineMatrixA, columnMatrixB);
                 }
-
-                matrixAxb.AddLineList(newLine);
             }
 
-            return matrixAxb;
+            return result;
         }
 
         public Matrix MultiplierFail(Matrix matrixA, Matrix matrixB)
@@ -72,6 +62,7 @@ namespace Matrix
             if (ValidateMultiplier(matrixA, matrixB))
                 throw new Exception("Matrizes não validas");
             var matrixAxb = new Matrix();
+            matrixAxb.CreateCompleteMatrix(matrixA.GetRowLenght(), matrixB.GetColumnLenght());
             for (var lineMatrixA = 0; lineMatrixA < matrixA.GetRowLenght() - 1; lineMatrixA++)
             {
                 var acc = 0.0;
@@ -83,9 +74,11 @@ namespace Matrix
                         var b = matrixB.GetMatrix()[i][columnMatrixB];
                         acc += a * b;
                     }
+                    matrixAxb.AddValueOnIndex(acc, lineMatrixA, columnMatrixB);
+
                 }
 
-                matrixAxb.AddValueOnIndex(acc, lineMatrixA, matrixB.GetColumnLenght());
+                // matrixAxb.AddValueOnIndex(acc, lineMatrixA, matrixB.GetColumnLenght());
             }
 
             return matrixAxb;
