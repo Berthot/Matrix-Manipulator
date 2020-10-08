@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Matrix
 {
@@ -8,27 +8,57 @@ namespace Matrix
         static void Main(string[] args)
         {
             var matrixA = new Matrix();
-            matrixA.AddLineList(new List<double> {1.0, 4.0});
-            matrixA.AddLineList(new List<double> {2.0, 5.0});
-            matrixA.AddLineList(new List<double> {3.0, 6.0});
-            
             var matrixB = new Matrix();
-            matrixB.AddLineList(new List<double> {1.0, 2.0, 3.0});
-            matrixB.AddLineList(new List<double> {4.0, 5.0, 6.0});
-            
-            
+            matrixA.CreateCompleteMatrix(130, 130);
+            matrixB.CreateCompleteMatrix(130, 130);
+            var result = new Matrix();
             var calc = new MatrixCalculator();
 
-            var result = calc.Multiplier(matrixA, matrixB);
+            var stopwatch = new Stopwatch();
             
-            // calc.Multiplier1(matrixA.GetMatrix(), matrixB.GetMatrix());
-            matrixA.PrintMatrix();
-            matrixA.SaveMatrixInCsv("A");
-            matrixB.SaveMatrixInCsv("B");
-            matrixB.PrintMatrix();
-            result.PrintMatrix();
+
+            
+            
+            stopwatch.Start();
+            var matrix2 = calc.Multiplier(matrixA, matrixB);
+            stopwatch.Stop();
+            matrix2.SaveMatrixInCsvWithTime("normal", stopwatch.Elapsed);
+            Console.WriteLine($"normal : {stopwatch.Elapsed.ToString()}");
+            
+            stopwatch.Restart();
+                        
+            stopwatch.Start();
+            var matrix1 = calc.MultiplierParallel(matrixA, matrixB);
+            stopwatch.Stop();
+            matrix1.SaveMatrixInCsvWithTime("paralela", stopwatch.Elapsed);
+            Console.WriteLine($"paralela : {stopwatch.Elapsed.ToString()}");
+
+
+
+
+
+
+
 
 
         }
+        
+        // var matrixA = new Matrix();
+        // // matrixA.ReadMatrixByCsv("A");
+        // matrixA.CreateCompleteMatrix(1000);
+        // matrixA.SaveMatrixInCsv("test");
+        // Process.GetCurrentProcess().Kill();
+        //     
+        // var matrixB = new Matrix();
+        // matrixB.ReadMatrixByCsv("B");
+        //     
+        // var calc = new MatrixCalculator();
+        // var result = calc.Multiplier(matrixA, matrixB);
+        //     
+        // // matrixA.PrintMatrix();
+        // // matrixB.PrintMatrix();
+        // // result.PrintMatrix();
+        // var directThreadsCount = Process.GetCurrentProcess().Threads.Count;
+        // Console.WriteLine(directThreadsCount);
     }
 }

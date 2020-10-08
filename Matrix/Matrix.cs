@@ -48,11 +48,19 @@ namespace Matrix
             _matrix.Add(line);
         }
 
-        public void CreateCompleteMatrix(int lineLenght, int columnLenght)
+        public void CreateCompleteMatrix(int rows, int column)
         {
-            for (var i = 0; i < columnLenght; i++)
+            for (var i = 0; i < rows; i++)
             {
-                AddLineRandomValues(lineLenght);
+                AddLineRandomValues(column);
+            }
+        }
+        
+        public void CreateMatrixColumnLine(int column, int line)
+        {
+            for (var i = 0; i < line; i++)
+            {
+                AddLineRandomValues(column);
             }
         }
 
@@ -86,6 +94,24 @@ namespace Matrix
 
             File.WriteAllText(GetPath(csvName), csv.ToString());
         }
+        
+        public void SaveMatrixInCsvWithTime(string csvName, TimeSpan time)
+        {
+            var csv = new StringBuilder();
+            csv.Append($"tempo de execução{_csvSplit.ToString()}{time.ToString()} sec\n\n");
+            foreach (var line in _matrix)
+            {
+                var newLine =
+                    line.Aggregate("", (current, value) =>
+                        $"{current}{value.ToString(CultureInfo.InvariantCulture)},");
+
+                var saveLine = string.Format($"{newLine.TrimEnd(_csvSplit)}\n", Environment.NewLine);
+                csv.Append(saveLine);
+            }
+
+            File.WriteAllText(GetPath(csvName), csv.ToString());
+        }
+
 
         public void ReadMatrixByCsv(string csvName)
         {
