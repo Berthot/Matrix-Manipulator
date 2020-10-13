@@ -117,16 +117,16 @@ namespace Matrix
         public void SaveMatrixInCsvWithTime(string csvName, TimeSpan time, string dimension)
         {
             var csv = new StringBuilder();
-            csv.Append($"tempo de execução{_csvSplit.ToString()}{time.ToString()} sec,{dimension}\n\n");
-            foreach (var line in _matrix)
-            {
-                var newLine =
-                    line.Aggregate("", (current, value) =>
-                        $"{current}{value.ToString(CultureInfo.InvariantCulture)},");
-
-                var saveLine = string.Format($"{newLine.TrimEnd(_csvSplit)}\n", Environment.NewLine);
-                csv.Append(saveLine);
-            }
+            csv.Append($"tempo de execução,dimensão\n{time.ToString()} sec,{dimension}\n\n");
+            // foreach (var line in _matrix)
+            // {
+            //     var newLine =
+            //         line.Aggregate("", (current, value) =>
+            //             $"{current}{value.ToString(CultureInfo.InvariantCulture)},");
+            //
+            //     var saveLine = string.Format($"{newLine.TrimEnd(_csvSplit)}\n", Environment.NewLine);
+            //     csv.Append(saveLine);
+            // }
 
             File.WriteAllText(GetPath(csvName), csv.ToString());
         }

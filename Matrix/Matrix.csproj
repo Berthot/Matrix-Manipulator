@@ -9,4 +9,8 @@
       <Folder Include="MatrixFiles" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="ILGPU" Version="0.9.1" />
+    </ItemGroup>
+
 </Project>

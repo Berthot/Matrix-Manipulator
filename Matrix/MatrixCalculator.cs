@@ -15,25 +15,28 @@ namespace Matrix
             var matrixARow = matrixA.GetRowLenght();
             var matrixBColumn = matrixB.GetColumnLenght();
             var matrixAColumn = matrixA.GetColumnLenght();
-            
+
             var matrixAClone = matrixA.GetMatrix();
             var matrixBClone = matrixB.GetMatrix();
-            
-            Parallel.For(0, matrixARow, body: lineMatrixA =>
-            {
-                for (var columnMatrixB = 0; columnMatrixB < matrixBColumn; columnMatrixB++)
-                {
-                    double acc = 0;
-                    for (var i = 0; i < matrixAColumn; i++)
-                    {
-                        var a = matrixAClone[lineMatrixA][i];
-                        var b = matrixBClone[i][columnMatrixB];
-                        acc += a * b;
-                    }
-                    result.AddValueOnIndex(acc, lineMatrixA, columnMatrixB);
-                }
 
-            });
+            Parallel.For(0,
+                matrixARow,
+                new ParallelOptions {MaxDegreeOfParallelism = 8},
+                lineMatrixA =>
+                {
+                    for (var columnMatrixB = 0; columnMatrixB < matrixBColumn; columnMatrixB++)
+                    {
+                        double acc = 0;
+                        for (var i = 0; i < matrixAColumn; i++)
+                        {
+                            var a = matrixAClone[lineMatrixA][i];
+                            var b = matrixBClone[i][columnMatrixB];
+                            acc += a * b;
+                        }
+
+                        result.AddValueOnIndex(acc, lineMatrixA, columnMatrixB);
+                    }
+                });
 
             return result;
         }
@@ -45,7 +48,7 @@ namespace Matrix
             var matrixARow = matrixA.GetRowLenght();
             var matrixBColumn = matrixB.GetColumnLenght();
             var matrixAColumn = matrixA.GetColumnLenght();
-            
+
             var matrixAClone = matrixA.GetMatrix();
             var matrixBClone = matrixB.GetMatrix();
 
@@ -60,6 +63,7 @@ namespace Matrix
                         var b = matrixBClone[i][columnMatrixB];
                         acc += a * b;
                     }
+
                     result.AddValueOnIndex(acc, lineMatrixA, columnMatrixB);
                 }
             }
@@ -84,8 +88,8 @@ namespace Matrix
                         var b = matrixB.GetMatrix()[i][columnMatrixB];
                         acc += a * b;
                     }
-                    matrixAxb.AddValueOnIndex(acc, lineMatrixA, columnMatrixB);
 
+                    matrixAxb.AddValueOnIndex(acc, lineMatrixA, columnMatrixB);
                 }
 
                 // matrixAxb.AddValueOnIndex(acc, lineMatrixA, matrixB.GetColumnLenght());
@@ -132,7 +136,5 @@ namespace Matrix
         //     return matrixAxb;
         // }
         //
-        
-        
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Matrix
 {
@@ -12,13 +14,13 @@ namespace Matrix
         {
             var matrixA = new Matrix();
             var matrixB = new Matrix();
-            const int m = 120;
-            const int n = 120;
-            const int k = 120;
-            matrixA.CreateCompleteMatrix(m, n);
-            matrixB.CreateCompleteMatrix(n, k);
+            const int m = 2000;
+            const int k = 4000;
+            const int n = 2000;
+            matrixA.CreateCompleteMatrix(m, k);
+            matrixB.CreateCompleteMatrix(k, n);
             var calc = new MatrixCalculator();
-            var dimension = $"Tentativas: {m.ToString()}x{k.ToString()}x{n.ToString()}";
+            var dimension = $"m={m.ToString()}k={k.ToString()}n={n.ToString()}";
             
             var matrixResult = new Matrix();
             var stopwatch = new Stopwatch();
@@ -31,7 +33,7 @@ namespace Matrix
             
             matrixResult.CreateCompleteMatrix(m, n);
 
-            matrix2.SaveMatrixInCsvWithTime("normal", stopwatch.Elapsed, dimension);
+            matrix2.SaveMatrixInCsvWithTime("normal3", stopwatch.Elapsed, dimension);
             Console.WriteLine($"normal   : {stopwatch.Elapsed.ToString()}");
             
             stopwatch.Reset();
@@ -39,16 +41,11 @@ namespace Matrix
             stopwatch.Start();
             var matrix1 = calc.MultiplierParallel(matrixA, matrixB, matrixResult);
             stopwatch.Stop();
-            
-            matrix1.SaveMatrixInCsvWithTime("paralela", stopwatch.Elapsed, dimension);
+            matrix1.SaveMatrixInCsvWithTime("paralela3", stopwatch.Elapsed, dimension);
             Console.WriteLine($"paralela : {stopwatch.Elapsed.ToString()}");
-
-
-
-
-
-
-
+            
+            // IEnumerable<int> numbers = Enumerable.Range(0, 10);
+            // var evens = from num in numbers where num % 2 == 0 select num;
 
 
         }
