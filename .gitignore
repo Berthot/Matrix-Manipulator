@@ -404,3 +404,4 @@ $RECYCLE.BIN/
 *.\Resources\testCSharpXlsx.xlsx
 *.\Resources\testCSharpCsv.xlsx
 /config.env
+/Matrix/EvilSoft.cs

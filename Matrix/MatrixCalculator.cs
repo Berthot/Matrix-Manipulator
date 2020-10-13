@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 // ReSharper disable StringLiteralTypo
@@ -11,19 +10,24 @@ namespace Matrix
     {
         public Matrix MultiplierParallel(Matrix matrixA, Matrix matrixB, Matrix result)
         {
-            if (ValidateMultiplier(matrixA, matrixB))
-                throw new Exception("Matrizes não validas");
-
-            Parallel.For(0, matrixA.GetRowLenght(), new ParallelOptions {MaxDegreeOfParallelism = 8}, 
-                lineMatrixA =>
+            // if (ValidateMultiplier(matrixA, matrixB))
+            //     throw new Exception("Matrizes não validas");
+            var matrixARow = matrixA.GetRowLenght();
+            var matrixBColumn = matrixB.GetColumnLenght();
+            var matrixAColumn = matrixA.GetColumnLenght();
+            
+            var matrixAClone = matrixA.GetMatrix();
+            var matrixBClone = matrixB.GetMatrix();
+            
+            Parallel.For(0, matrixARow, body: lineMatrixA =>
             {
-                for (var columnMatrixB = 0; columnMatrixB < matrixB.GetColumnLenght(); columnMatrixB++)
+                for (var columnMatrixB = 0; columnMatrixB < matrixBColumn; columnMatrixB++)
                 {
-                    var acc = 0.0;
-                    for (var i = 0; i < matrixA.GetColumnLenght(); i++)
+                    double acc = 0;
+                    for (var i = 0; i < matrixAColumn; i++)
                     {
-                        var a = matrixA.GetMatrix()[lineMatrixA][i];
-                        var b = matrixB.GetMatrix()[i][columnMatrixB];
+                        var a = matrixAClone[lineMatrixA][i];
+                        var b = matrixBClone[i][columnMatrixB];
                         acc += a * b;
                     }
                     result.AddValueOnIndex(acc, lineMatrixA, columnMatrixB);
@@ -36,18 +40,24 @@ namespace Matrix
 
         public Matrix Multiplier(Matrix matrixA, Matrix matrixB, Matrix result)
         {
-            if (ValidateMultiplier(matrixA, matrixB))
-                throw new Exception("Matrizes não validas");
+            // if (ValidateMultiplier(matrixA, matrixB))
+            //     throw new Exception("Matrizes não validas");
+            var matrixARow = matrixA.GetRowLenght();
+            var matrixBColumn = matrixB.GetColumnLenght();
+            var matrixAColumn = matrixA.GetColumnLenght();
+            
+            var matrixAClone = matrixA.GetMatrix();
+            var matrixBClone = matrixB.GetMatrix();
 
-            for (var lineMatrixA = 0; lineMatrixA < matrixA.GetRowLenght(); lineMatrixA++)
+            for (var lineMatrixA = 0; lineMatrixA < matrixARow; lineMatrixA++)
             {
-                for (var columnMatrixB = 0; columnMatrixB < matrixB.GetColumnLenght(); columnMatrixB++)
+                for (var columnMatrixB = 0; columnMatrixB < matrixBColumn; columnMatrixB++)
                 {
                     var acc = 0.0;
-                    for (var i = 0; i < matrixA.GetColumnLenght(); i++)
+                    for (var i = 0; i < matrixAColumn; i++)
                     {
-                        var a = matrixA.GetMatrix()[lineMatrixA][i];
-                        var b = matrixB.GetMatrix()[i][columnMatrixB];
+                        var a = matrixAClone[lineMatrixA][i];
+                        var b = matrixBClone[i][columnMatrixB];
                         acc += a * b;
                     }
                     result.AddValueOnIndex(acc, lineMatrixA, columnMatrixB);

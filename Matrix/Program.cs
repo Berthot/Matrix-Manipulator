@@ -12,9 +12,9 @@ namespace Matrix
         {
             var matrixA = new Matrix();
             var matrixB = new Matrix();
-            var m = 30;
-            var k = 30;
-            var n = 30;
+            const int m = 120;
+            const int n = 120;
+            const int k = 120;
             matrixA.CreateCompleteMatrix(m, n);
             matrixB.CreateCompleteMatrix(n, k);
             var calc = new MatrixCalculator();
